@@ -37,6 +37,14 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
 	unzip -u -o -q /tmp/owncloud.zip -d /usr/local/lib #either extracts new or replaces current files
 	rm -f /tmp/owncloud.zip
 
+	# Download and extract contacts & calendar app
+	rm -f /tmp/calendar.zip
+	rm -f /tmp/contacts.zip
+	wget -qO /tmp/calendar.zip https://apps.owncloud.com/CONTENT/content-files/168707-calendar.zip
+	wget -qO /tmp/contacts.zip https://apps.owncloud.com/CONTENT/content-files/168708-contacts.zip
+	unzip -u -o -q /tmp/calendar.zip -d /usr/local/lib/owncloud/apps
+	unzip -u -o -q /tmp/contacts.zip -d /usr/local/lib/owncloud/apps
+
 	# Fix weird permissions.
 	chmod 755 /usr/local/lib/owncloud/{apps,config}
 
@@ -67,7 +75,7 @@ if [ ! -f $STORAGE_ROOT/owncloud/owncloud.db ]; then
 
   'instanceid' => '$instanceid',
 
-  'trusted_domains' => 
+  'trusted_domains' =>
     array (
       0 => '$PRIMARY_HOSTNAME',
     ),
