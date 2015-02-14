@@ -16,6 +16,8 @@ apt-get purge -qq -y owncloud*
 
 # Install ownCloud from source of this version:
 owncloud_ver=8.0.0
+calendar_ver=8.0.0
+contacts_ver=8.0.0
 
 # Check if ownCloud dir exist, and check if version matches owncloud_ver (if either doesn't - install/upgrade)
 if [ ! -d /usr/local/lib/owncloud/ ] \
@@ -40,8 +42,8 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
 	# Download and extract contacts & calendar app
 	rm -f /tmp/calendar.zip
 	rm -f /tmp/contacts.zip
-	wget -qO /tmp/calendar.zip https://apps.owncloud.com/CONTENT/content-files/168707-calendar.zip
-	wget -qO /tmp/contacts.zip https://apps.owncloud.com/CONTENT/content-files/168708-contacts.zip
+	wget -qO /tmp/calendar.zip https://github.com/owncloud/calendar/archive/v$calendar_ver.zip
+	wget -qO /tmp/calendar.zip https://github.com/owncloud/contacts/archive/v$contacts_ver.zip
 	unzip -u -o -q /tmp/calendar.zip -d /usr/local/lib/owncloud/apps
 	unzip -u -o -q /tmp/contacts.zip -d /usr/local/lib/owncloud/apps
 
