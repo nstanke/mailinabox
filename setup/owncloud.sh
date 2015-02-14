@@ -43,7 +43,7 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
 	rm -f /tmp/calendar.zip
 	rm -f /tmp/contacts.zip
 	wget -qO /tmp/calendar.zip https://github.com/owncloud/calendar/archive/v$calendar_ver.zip
-	wget -qO /tmp/calendar.zip https://github.com/owncloud/contacts/archive/v$contacts_ver.zip
+	wget -qO /tmp/contacts.zip https://github.com/owncloud/contacts/archive/v$contacts_ver.zip
 	unzip -u -o -q /tmp/calendar.zip -d /usr/local/lib/owncloud/apps
 	unzip -u -o -q /tmp/contacts.zip -d /usr/local/lib/owncloud/apps
 
