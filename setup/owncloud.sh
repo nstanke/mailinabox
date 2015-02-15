@@ -39,14 +39,6 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
 	unzip -u -o -q /tmp/owncloud.zip -d /usr/local/lib #either extracts new or replaces current files
 	rm -f /tmp/owncloud.zip
 
-	# Download and extract contacts & calendar app
-	rm -f /tmp/calendar.zip
-	rm -f /tmp/contacts.zip
-	wget -qO /tmp/calendar.zip https://github.com/owncloud/calendar/archive/v$calendar_ver.zip
-	wget -qO /tmp/contacts.zip https://github.com/owncloud/contacts/archive/v$contacts_ver.zip
-	unzip -u -o -q /tmp/calendar.zip -d /usr/local/lib/owncloud/apps
-	unzip -u -o -q /tmp/contacts.zip -d /usr/local/lib/owncloud/apps
-
 	# Fix weird permissions.
 	chmod 755 /usr/local/lib/owncloud/{apps,config}
 
@@ -61,6 +53,25 @@ if [ ! -d /usr/local/lib/owncloud/ ] \
 	# Run the upgrade script (if OC is up-to-date it wont matter).
 	hide_output sudo -u www-data php /usr/local/lib/owncloud/occ upgrade
 fi
+
+# Download and extract contacts & calendar app
+if ! grep -q $calendar_ver /usr/local/lib/owncloud/apps/calendar.version; then
+	rm -f /tmp/calendar.zip
+	wget -qO /tmp/calendar.zip https://github.com/owncloud/calendar/archive/v$calendar_ver.zip
+	rm -rf /usr/local/lib/owncloud/apps/calendar-$calendar_ver.zip
+	unzip -u -o -q /tmp/calendar.zip -d /usr/local/lib/owncloud/apps
+fi
+
+if ! grep -q $contacts_ver /usr/local/lib/owncloud/apps/contacts.version; then
+	rm -f /tmp/contacts.zip
+	wget -qO /tmp/contacts.zip https://github.com/owncloud/contacts/archive/v$contacts_ver.zip
+	rm -rf /usr/local/lib/owncloud/apps/calendar-$contacts_ver.zip
+	unzip -u -o -q /tmp/contacts.zip -d /usr/local/lib/owncloud/apps
+fi
+
+# log new calendar & contacts app versions
+echo "$calendar_ver" > /usr/local/lib/owncloud/apps/calendar.version
+echo "$contacts_ver" > /usr/local/lib/owncloud/apps/contacts.version
 
 # ### Configuring ownCloud
 
