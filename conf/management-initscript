@@ -106,12 +106,11 @@ do_update()
         # Get latest release and do a checkout
         git fetch --tags
         TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-        git checkout -q $TAG
 
         if gpg --list-keys | grep -q 'C10BDD81' ; then
         	if git verify-tag $TAG ; then
         		echo "Updating $NAME to $TAG"
-            apt-get -q -q update
+            git checkout -q $TAG
         		setup/start.sh
         	else
         		echo "Abort, invalid signutare."
