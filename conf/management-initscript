@@ -93,6 +93,35 @@ do_stop()
         rm -f $PIDFILE
         return "$RETVAL"
 }
+
+do_update()
+{
+        if [ ! -d $HOME/mailinabox ]; then
+          git clone https://github.com/mail-in-a-box/mailinabox $HOME/mailinabox
+        fi
+
+        # Change working dir
+        cd $HOME/mailinabox
+
+        # Get latest release and do a checkout
+        git fetch --tags
+        TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+        git checkout -q $TAG
+
+        if gpg --list-keys | grep -q 'C10BDD81' ; then
+        	if git verify-tag $TAG ; then
+        		echo "Updating $NAME to $TAG"
+            apt-get -q -q update
+        		setup/start.sh
+        	else
+        		echo "Abort, invalid signutare."
+        		exit
+        	fi
+        else
+        	echo "Please add and verify Joshua Tauberers PGP key to update $NAME"
+        fi
+
+}
 case "$1" in
   start)
         [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
@@ -128,8 +157,12 @@ case "$1" in
                 ;;
         esac
         ;;
+  update)
+          [ "$VERBOSE" != no ] && log_daemon_msg "Updating $DESC" "$NAME"
+          do_update
+        ;;
   *)
-        echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload}" >&2
+        echo "Usage: $SCRIPTNAME {start|stop|restart|force-reload|update}" >&2
         exit 3
         ;;
 esac
