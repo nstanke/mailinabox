@@ -97,20 +97,20 @@ do_stop()
 do_update()
 {
         # Check if Mail-in-a-Box is installed
-        if [ ! -d $HOME/mailinabox ]; then
-          git clone https://github.com/mail-in-a-box/mailinabox $HOME/mailinabox
+        if [ ! -d "$HOME/mailinabox" ]; then
+          git clone https://github.com/mail-in-a-box/mailinabox "$HOME/mailinabox"
         fi
 
         # Change working directory
-        cd $HOME/mailinabox
+        cd "$HOME/mailinabox"
 
         # Fetch latest tag
         git fetch --tags
-        TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-        git fetch --depth 1 --force --prune origin tag $TAG
+        TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        git fetch --depth 1 --force --prune origin tag "$TAG"
 
         # Are we up-to-date?
-        if [ "$TAG" == `git describe` ]; then
+        if [ "$TAG" == $(git describe) ]; then
           echo "You already have Mail-in-a-Box $TAG. Run"
           echo "  sudo setup/start.sh"
           echo "if there are any problems."
@@ -119,9 +119,9 @@ do_update()
 
         # ... if not, check PGP key & upgrade if valid
         if gpg --list-keys | grep -q 'C10BDD81' ; then
-        	if git verify-tag $TAG ; then
+        	if git verify-tag "$TAG" ; then
         		echo "Updating $NAME to $TAG"
-            git checkout -q $TAG
+            git checkout -q "$TAG"
         		setup/start.sh
         	else
         		echo "Abort, invalid signutare."
