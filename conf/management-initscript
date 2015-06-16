@@ -106,11 +106,11 @@ do_update()
 
         # Fetch latest tag
         git fetch --tags
-        TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
         git fetch --depth 1 --force --prune origin tag "$TAG"
 
         # Are we up-to-date?
-        if [ "$TAG" == $(git describe) ]; then
+        if [ "$TAG" == "$(git describe)" ]; then
           echo "You already have Mail-in-a-Box $TAG. Run"
           echo "  sudo setup/start.sh"
           echo "if there are any problems."
