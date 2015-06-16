@@ -107,7 +107,6 @@ do_update()
         # Fetch latest tag
         git fetch --tags &> /dev/null
         TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-        git fetch --depth 1 --force --prune origin tag "$TAG" &> /dev/null
 
         # Are we up-to-date?
         if [ "$TAG" == "$(git describe)" ]; then
