@@ -96,31 +96,26 @@ do_stop()
 
 do_update()
 {
-        # Check if Mail-in-a-Box is installed
-        if [ ! -d "$HOME/mailinabox" ]; then
-          git clone https://github.com/mail-in-a-box/mailinabox "$HOME/mailinabox"
-        fi
-
-        # Change working directory
-        cd "$HOME/mailinabox"
-
-        # Fetch latest tag
-        git fetch --tags &> /dev/null
-        TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+        # Retrive versions
+        current_version=$(curl -s --user $(</var/lib/mailinabox/api.key): http://127.0.0.1:10222/system/version)
+        latest_version=$(curl -s -d POSTDATA --user $(</var/lib/mailinabox/api.key): http://127.0.0.1:10222/system/latest-upstream-version)
 
         # Are we up-to-date?
-        if [ "$TAG" == "$(git describe)" ]; then
-          echo "You already have Mail-in-a-Box $TAG. Run"
+        if [ "$current_version" == "$latest_version" ]; then
+          echo "You already have Mail-in-a-Box $current_version. Run"
           echo "  sudo mailinabox"
           echo "if there are any problems."
           exit 1
         fi
 
-        # ... if not, check PGP key & upgrade if valid
+        # Change working directory.
+        cd $(dirname $(readlink -f /usr/local/bin/mailinabox-daemon)) && cd ../
+
+        # Check PGP key & upgrade if valid
         if gpg --list-keys | grep -q 'C10BDD81' ; then
-        	if git verify-tag "$TAG" ; then
-        		echo "Updating $NAME to $TAG"
-            git checkout -q "$TAG"
+        	if git verify-tag "$latest_version" ; then
+        		echo "Updating $NAME to $latest_version"
+            git checkout -q "$latest_version"
         		setup/start.sh
         	else
         		echo "Abort, invalid signutare."
