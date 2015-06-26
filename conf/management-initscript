@@ -111,6 +111,9 @@ do_update()
         # Change working directory.
         cd $(dirname $(readlink -f /usr/local/bin/mailinabox-daemon)) && cd ../
 
+        # Fetch latest version
+        git fetch $latest_version
+
         # Check PGP key & upgrade if valid
         if gpg --list-keys | grep -q 'C10BDD81' ; then
         	if git verify-tag "$latest_version" ; then
